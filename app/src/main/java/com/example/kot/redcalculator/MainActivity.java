@@ -1,10 +1,12 @@
 package com.example.kot.redcalculator;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.os.CancellationSignal;
+import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,16 +14,42 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    String myTemporaryText;
-    EditText myEditText;
+    String myTemporaryText="";
+    TextView myTextView;
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_items, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.about:
+                Intent myIntent = new Intent(this, AboutActivity.class);
+                startActivity(myIntent);
+
+                return true;
+            case R.id.exit:
+                finish();
+                android.os.Process.killProcess(android.os.Process.myPid());
+
+                //finish();
+                //System.exit(0);
+                return true;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText myEditText = (EditText) findViewById(R.id.editTextMain);
-        myEditText.setCursorVisible(true);
+        TextView myTextView = (TextView) findViewById(R.id.textViewMain);
 
 
         Button myButton1 = (Button) findViewById(R.id.btn1);
@@ -34,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button myButton7 = (Button) findViewById(R.id.btn7);
         Button myButton8 = (Button) findViewById(R.id.btn8);
         Button myButton9 = (Button) findViewById(R.id.btn9);
-
         Button myButtonDot = (Button) findViewById(R.id.btnDot);
 
         Button myButtonDivision = (Button) findViewById(R.id.btnDivision);
@@ -67,174 +94,258 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         myButtonMultiply.setOnClickListener((View.OnClickListener) this);
         myButtonEqual.setOnClickListener((View.OnClickListener) this);
         myButtonClear.setOnClickListener((View.OnClickListener) this);
+
+        myButtonClear.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+                TextView myTextView = (TextView) findViewById(R.id.textViewMain);
+                myTextView.setText("");
+                return true;
+            }
+        });
+
+
+
     }
+
+
+
     @Override
     public void onClick(View v){
         //String myTemporaryText;
-        EditText myEditText = (EditText) findViewById(R.id.editTextMain);
+        TextView myTextView = (TextView) findViewById(R.id.textViewMain);
         TextView myTV1 = (TextView) findViewById(R.id.textView1);
         TextView myTV2 = (TextView) findViewById(R.id.textView2);
 
         switch (v.getId()){
 
             case R.id.btnClear:
-                finish();
+                String myTemporaryString1 = "";
+                for (int i=0;i<myTextView.length()-1;i++){
+                    myTemporaryString1 = myTemporaryString1+myTextView.getText().charAt(i);
+                }
+
+                myTextView.setText(myTemporaryString1);
+
                 break;
 
 
 
             case R.id.btnEqual:
-                int myNumber1=0;
-                int myNumber2=0;
-                boolean myFlagForNumber1 = false;
+                TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
+                int ii=0;
+                //double[] myNumbers={};
+
+
+
                // boolean myFlagForNumber2 = false;
-                char myCurrentSign = ' ';
-                //char myNextSign;
+
+
                 String myTemporaryString = "";
-                myEditText.setText(myEditText.getText()+" ");
+                myTextView.setText(myTextView.getText()+"=");
+                myTextViewAdditional.setText(myTextView.getText());
 
-                for (int i=0; i < myEditText.length();i++){
+                for (int i=0; i < myTextView.length();i++) {
+                   // Log.d("MYLOG", "ITERATION NUMBER " + i);
+                    if (myTextView.getText().toString().charAt(i) == '+' |
+                            myTextView.getText().toString().charAt(i) == '-' |
+                            myTextView.getText().toString().charAt(i) == 'x' |
+                            myTextView.getText().toString().charAt(i) == '÷' ){
 
-                    if (    myEditText.getText().toString().charAt(i) != '+' &
-                            myEditText.getText().toString().charAt(i) != '-' &
-                            myEditText.getText().toString().charAt(i) != 'x' &
-                            myEditText.getText().toString().charAt(i) != '÷' &
-                            myEditText.getText().toString().charAt(i) != ' '){
+                            ii++;
 
-                        myTemporaryString = myTemporaryString + myEditText.getText().toString().charAt(i);
-
-
-                    }else if (myFlagForNumber1 == false) {
-                        myFlagForNumber1 = true;
-                        myCurrentSign = myEditText.getText().charAt(i);
-                        myNumber1 = Integer.parseInt(myTemporaryString);
-
-                        myTV1.setText(myTV1.getText() + " " + Integer.toString(myNumber1));
-
-                        myTemporaryString="";
-
-
-
-
-                    }else if(myFlagForNumber1 == true){
-                        //myFlagForNumber2 = true;
-                        myNumber2 = Integer.parseInt(myTemporaryString);
-
-                        myTV2.setText(myTV2.getText() + " " + Integer.toString(myNumber2));
-
-                        myTemporaryString="";
-
-                        if(myCurrentSign == '+'){
-                            myNumber1 = myNumber1 + myNumber2;
-                        }else if(myCurrentSign == '-'){
-                            myNumber1 = myNumber1 - myNumber2;
-                        }else if(myCurrentSign == 'x'){
-                            myNumber1 = myNumber1 * myNumber2;
-                        }else if(myCurrentSign == '÷'){
-                            myNumber1 = myNumber1 / myNumber2;
-                        }
-                        myCurrentSign = myEditText.getText().charAt(i);
                     }
+
+                }
+
+
+                //Log.d("MYLOG", "ii NUMBER " + ii);
+
+                Double[] myNumbers = new Double[ii+1];
+                char[] mySigns = new char[ii+1];
+
+                if (myTextView.getText().toString().charAt(0) == '-'){
+
+                    mySigns[0]='-';
+                }else {
+
+                    mySigns[0]='+';
+                }
+
+                Log.d("MYLOG", " NUMBER ONE   " + ii);
+
+                int iii=0;
+                for (int i=0; i < myTextView.length();i++) {
+                    if ((myTextView.getText().charAt(i) >= '0' &
+                            myTextView.getText().charAt(i) <= '9') |
+                            myTextView.getText().charAt(i) == '.' ) {
+
+                        myTemporaryString = myTemporaryString + myTextView.getText().charAt(i);
+                        //Log.d("MYLOG","NUMBER iii = " + iii+ " |   myTemporaryString  " + myTemporaryString);
+                    } else {
+                        myNumbers[iii] = Double.valueOf(myTemporaryString);
+                        //Log.d("MYLOG", "iii DOUBLE NUMBER " + String.valueOf(myNumbers[iii]));
+                        iii++;
+
+                       // Log.d("MYLOG", iii + "   SIGN is   " + myTextView.getText().charAt(i));
+
+                        if(myTextView.getText().charAt(i) == '+' |
+                                myTextView.getText().charAt(i) == '-' |
+                                myTextView.getText().charAt(i) == 'x' |
+                                myTextView.getText().charAt(i) == '÷'){
+
+                            mySigns[iii]=myTextView.getText().charAt(i);
+                            Log.d("MYLOG", iii + "  SIGNS  IS " + mySigns[iii]);
+                        }
+
+
+                        myTemporaryString = "";
+
+                    }
+                }
+
+                Double myTemporaryNumber = 0.0;
+                for (int i=0; i<mySigns.length;i++){
+                    if (mySigns[i]=='x') {
+                        myTemporaryNumber = myNumbers[i-1]*myNumbers[i];
+                        if (mySigns[i-1]=='-'){
+                            myTemporaryNumber = -myTemporaryNumber;
+
+
+
+                    }
+                    }
+
 
 
                 }
 
-                myEditText.setText(Integer.toString(myNumber1));
+
+
+
 
 
                 break;
 
             case R.id.btnDot:
 
-                myTemporaryText = myEditText.getText().toString()+".";
+                char mySingDot = '.';
+                myCheckingFotRepetitiveSigns(mySingDot);
+                //int myTextLength = myTextView.length();
+                //Log.d("MYLOG", "LENGTH " + myTextLength);
+               // Log.d("MYLOG", "LAST SIGN " + myTextView.getText().charAt(myTextLength-1));
+               /* if (myTextView.getText().toString()=="" |
+                        myTextView.getText().charAt(myTextView.length()-1)=='.' |
+                        myTextView.getText().charAt(myTextView.length()-1)=='+' |
+                        myTextView.getText().charAt(myTextView.length()-1)=='-' |
+                        myTextView.getText().charAt(myTextView.length()-1)=='x' |
+                        myTextView.getText().charAt(myTextView.length()-1)=='÷'){
 
-                myEditText.setText(myTemporaryText);
+                    break;
 
-                myEditText.setSelection(myEditText.getText().length());
+
+                }else{
+
+
+
+                myTemporaryText = myTextView.getText().toString()+".";
+
+                myTextView.setText(myTemporaryText);
+
+                }*/
                 break;
 
 
             case R.id.btnPlus:
+                char mySignP = '+';
+                myCheckingFotRepetitiveSigns(mySignP);
 
-                myTemporaryText = myEditText.getText().toString()+"+";
+               // myTemporaryText = myEditText.getText().toString()+"+";
 
-                myEditText.setText(myTemporaryText);
+               // myEditText.setText(myTemporaryText);
 
-                myEditText.setSelection(myEditText.getText().length());
+               // myEditText.setSelection(myEditText.getText().length());
                 break;
 
             case R.id.btnMinus:
-                myTemporaryText = myEditText.getText().toString()+"-";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                char mySignM = '-';
+                myCheckingFotRepetitiveSigns(mySignM);
+                //myTemporaryText = myEditText.getText().toString()+"-";
+                //myEditText.setText(myTemporaryText);
+                //myEditText.setSelection(myEditText.getText().length());
                 break;
 
             case R.id.btnMultiply:
-                myTemporaryText = myEditText.getText().toString()+"x";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                char mySignMultiply = 'x';
+                myCheckingFotRepetitiveSigns(mySignMultiply);
+               // myTemporaryText = myTextView.getText().toString()+"x";
+               // myTextView.setText(myTemporaryText);
+
                 break;
             // code ALT + 0247
             case R.id.btnDivision:
-                myTemporaryText = myEditText.getText().toString()+"÷";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                char mySignD = '÷';
+                myCheckingFotRepetitiveSigns(mySignD);
+                //myTemporaryText = myTextView.getText().toString()+"÷";
+             //  myTextView.setText(myTemporaryText);
+
                 break;
 
 
             case R.id.btn0:
-                myEditText.setSelection(myEditText.getText().length());
-                myTemporaryText = myEditText.getText().toString()+"0";
-                myEditText.setText(myTemporaryText);
-                //myEditText.setSelection(myEditText.getText().length());
+
+                myTemporaryText = myTextView.getText().toString()+"0";
+                myTextView.setText(myTemporaryText);
+
                 break;
 
             case R.id.btn1:
 
 
-                myTemporaryText = myEditText.getText().toString()+"1";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"1";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn2:
-                myTemporaryText = myEditText.getText().toString()+"2";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"2";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn3:
-                myTemporaryText = myEditText.getText().toString()+"3";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"3";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn4:
-                myTemporaryText = myEditText.getText().toString()+"4";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"4";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn5:
-                myTemporaryText = myEditText.getText().toString()+"5";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"5";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn6:
-                myTemporaryText = myEditText.getText().toString()+"6";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"6";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn7:
-                myTemporaryText = myEditText.getText().toString()+"7";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"7";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn8:
-                myTemporaryText = myEditText.getText().toString()+"8";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"8";
+                myTextView.setText(myTemporaryText);
+
                 break;
             case R.id.btn9:
-                myTemporaryText = myEditText.getText().toString()+"9";
-                myEditText.setText(myTemporaryText);
-                myEditText.setSelection(myEditText.getText().length());
+                myTemporaryText = myTextView.getText().toString()+"9";
+                myTextView.setText(myTemporaryText);
+
                 break;
 
         }
@@ -243,5 +354,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     }
+
+    public void myCheckingFotRepetitiveSigns(char Sign){
+        TextView myTextView = (TextView) findViewById(R.id.textViewMain);
+        int myTextLength = myTextView.length();
+        //Log.d("MYLOG", "LENGTH " + myTextLength);
+       // Log.d("MYLOG", "LAST SIGN " + myTextView.getText().charAt(myTextLength-1));
+
+        if (myTextLength == 0 & Sign == '-'){
+
+            myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
+            myTextView.setText(myTemporaryText);
+
+           // Log.d("MYLOG", "CHECKING RIGHT " );
+
+        }else if (
+                myTextView.getText().charAt(myTextView.length()-1)=='.' |
+                myTextView.getText().charAt(myTextView.length()-1)=='+' |
+                myTextView.getText().charAt(myTextView.length()-1)=='-' |
+                myTextView.getText().charAt(myTextView.length()-1)=='x' |
+                myTextView.getText().charAt(myTextView.length()-1)=='÷'){
+           // Log.d("MYLOG", "CHECKING WRONG " );
+
+        }else{
+
+            myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
+
+            myTextView.setText(myTemporaryText);
+
+        }
+
+    }
+
+
 
 }
