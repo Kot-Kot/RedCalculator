@@ -1,6 +1,7 @@
 package com.example.kot.redcalculator;
 
 import android.content.Intent;
+import android.inputmethodservice.Keyboard;
 import android.nfc.Tag;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,9 +17,15 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String KEY_MY_TEXT_VIEW_MAIN = "DATA_MAIN";
+    private static final String KEY_MY_TEXT_VIEW_ADD = "DATA_ADD";
+
     String myTemporaryText="";
     TextView myTextView;
-
+    TextView myTextViewAdditional;
+    public String myTextViewString;
+    public  String myTextViewStringAdd;
+    public boolean myDotFlag =false;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
@@ -56,6 +63,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
+        TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
+
+
+
+
+        if(savedInstanceState!=null){
+
+            myTextView.setText(savedInstanceState.getString(KEY_MY_TEXT_VIEW_MAIN));
+            myTextViewAdditional.setText(savedInstanceState.getString(KEY_MY_TEXT_VIEW_ADD));
+
+            Log.d("MYLOG","onCreate   myTextViewString  "+ myTextViewString);
+            Log.d("MYLOG","onCreate   myTextViewStringAdd   "+myTextViewStringAdd);
+        }
+
 
 
         Button myButton1 = (Button) findViewById(R.id.btn1);
@@ -116,13 +137,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Log.d("MYLOG","myTextViewString  "+ myTextViewString);
+        Log.d("MYLOG","myTextViewStringAdd   "+myTextViewStringAdd);
+
+        outState.putString(KEY_MY_TEXT_VIEW_MAIN, myTextViewString);
+        outState.putString(KEY_MY_TEXT_VIEW_ADD, myTextViewStringAdd);
+    }
 
     @Override
     public void onClick(View v){
         //String myTemporaryText;
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
-        TextView myTV1 = (TextView) findViewById(R.id.textView1);
-        TextView myTV2 = (TextView) findViewById(R.id.textView2);
+        TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
 
         switch (v.getId()){
 
@@ -149,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("MYLOG", "ERRORRRRRRR");
                 }else {
 
-                    TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
+                    //TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
 
                     int ii = 0;
                     //double[] myNumbers={};
@@ -331,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if (myConstantNumber % 1.0 == 0) {
                         myTextView.setText(Integer.toString(Integer.valueOf(myConstantNumber.intValue())));
                     } else {
+                        myConstantNumber=Math.rint(1000000.0*myConstantNumber)/1000000.0;
                         myTextView.setText(Double.toString(myConstantNumber));
                     }
 
@@ -342,28 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 char mySingDot = '.';
                 myCheckingFotRepetitiveSigns(mySingDot);
-                //int myTextLength = myTextView.length();
-                //Log.d("MYLOG", "LENGTH " + myTextLength);
-               // Log.d("MYLOG", "LAST SIGN " + myTextView.getText().charAt(myTextLength-1));
-               /* if (myTextView.getText().toString()=="" |
-                        myTextView.getText().charAt(myTextView.length()-1)=='.' |
-                        myTextView.getText().charAt(myTextView.length()-1)=='+' |
-                        myTextView.getText().charAt(myTextView.length()-1)=='-' |
-                        myTextView.getText().charAt(myTextView.length()-1)=='x' |
-                        myTextView.getText().charAt(myTextView.length()-1)=='÷'){
 
-                    break;
-
-
-                }else{
-
-
-
-                myTemporaryText = myTextView.getText().toString()+".";
-
-                myTextView.setText(myTemporaryText);
-
-                }*/
                 break;
 
 
@@ -371,34 +381,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 char mySignP = '+';
                 myCheckingFotRepetitiveSigns(mySignP);
 
-               // myTemporaryText = myEditText.getText().toString()+"+";
 
-               // myEditText.setText(myTemporaryText);
-
-               // myEditText.setSelection(myEditText.getText().length());
                 break;
 
             case R.id.btnMinus:
                 char mySignM = '-';
                 myCheckingFotRepetitiveSigns(mySignM);
-                //myTemporaryText = myEditText.getText().toString()+"-";
-                //myEditText.setText(myTemporaryText);
-                //myEditText.setSelection(myEditText.getText().length());
+
                 break;
 
             case R.id.btnMultiply:
                 char mySignMultiply = 'x';
                 myCheckingFotRepetitiveSigns(mySignMultiply);
-               // myTemporaryText = myTextView.getText().toString()+"x";
-               // myTextView.setText(myTemporaryText);
+
 
                 break;
             // code ALT + 0247
             case R.id.btnDivision:
                 char mySignD = '÷';
                 myCheckingFotRepetitiveSigns(mySignD);
-                //myTemporaryText = myTextView.getText().toString()+"÷";
-             //  myTextView.setText(myTemporaryText);
 
                 break;
 
@@ -460,12 +461,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
 
+        myTextViewString = myTextView.getText().toString();
+        myTextViewStringAdd=myTextViewAdditional.getText().toString();
+
 
 
 
     }
 
     public void myCheckingFotRepetitiveSigns(char Sign){
+
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
         int myTextLength = myTextView.length();
         //Log.d("MYLOG", "LENGTH " + myTextLength);
@@ -477,21 +482,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myTextView.setText(myTemporaryText);
 
            // Log.d("MYLOG", "CHECKING RIGHT " );
-        }else if(myTextLength == 0)  {
+        }else if(myTextLength == 0 || (myTextView.getText().charAt(0)=='-' && myTextLength == 1)){
 
-        }else if (
-                myTextView.getText().charAt(myTextView.length()-1)=='.' |
+
+        }else if (myTextView.getText().charAt(myTextView.length()-1)=='.'|
                 myTextView.getText().charAt(myTextView.length()-1)=='+' |
                 myTextView.getText().charAt(myTextView.length()-1)=='-' |
                 myTextView.getText().charAt(myTextView.length()-1)=='x' |
                 myTextView.getText().charAt(myTextView.length()-1)=='÷'){
            // Log.d("MYLOG", "CHECKING WRONG " );
 
+                 myTemporaryText = myTextView.getText().toString();
+                 myTextView.setText(myTemporaryText.substring(0,myTemporaryText.length()-1)+Character.toString(Sign));
+
         }else{
+            if (Sign=='.' & myDotFlag==false){
+                myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
+                myTextView.setText(myTemporaryText);
+                myDotFlag=true;
+                Log.d("MYLOG", "| myDotFlag . " + myDotFlag);
+            }else if(Sign=='.' & myDotFlag==true){
+                myDotFlag=true;
+                Log.d("MYLOG", "|| myDotFlag . " + myDotFlag);
+            }else{
+                myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
+                myTextView.setText(myTemporaryText);
+                myDotFlag=false;
+                Log.d("MYLOG", "||| myDotFlag +-*/ " + myDotFlag);
+            }
 
-            myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
 
-            myTextView.setText(myTemporaryText);
 
         }
 
