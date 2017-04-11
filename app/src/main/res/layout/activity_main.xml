@@ -10,8 +10,8 @@
         android:layout_width="368dp"
         android:layout_height="495dp"
         android:background="@color/colorBackground"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
 
         <TextView
             android:id="@+id/textViewAdditional"
@@ -400,8 +400,8 @@
             android:layout_below="@+id/textViewMain"
             android:layout_centerHorizontal="true"
             android:textColor="#FFFFFF"
-            tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
 
         <TextView
             android:id="@+id/textView2"
@@ -411,8 +411,8 @@
             android:layout_alignLeft="@+id/textView1"
             android:layout_alignStart="@+id/textView1"
             android:textColor="#FFFFFF"
-            tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="0dp" />
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
 
     </RelativeLayout>
 

@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -47,6 +49,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+       // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
 
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
@@ -133,99 +139,203 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             case R.id.btnEqual:
-                TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
-                int ii=0;
-                //double[] myNumbers={};
+                if (myTextView.getText().length()==0 ||
+                        myTextView.getText().charAt(myTextView.getText().length()-1)=='+' ||
+                        myTextView.getText().charAt(myTextView.getText().length()-1)=='-' ||
+                        myTextView.getText().charAt(myTextView.getText().length()-1)=='x' ||
+                        myTextView.getText().charAt(myTextView.getText().length()-1)=='÷' ||
+                        myTextView.getText().charAt(myTextView.getText().length()-1)=='.'){
+
+                    Log.d("MYLOG", "ERRORRRRRRR");
+                }else {
+
+                    TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
+
+                    int ii = 0;
+                    //double[] myNumbers={};
 
 
+                    // boolean myFlagForNumber2 = false;
 
-               // boolean myFlagForNumber2 = false;
 
+                    String myTemporaryString = "";
+                    myTextView.setText(myTextView.getText() + "=");
+                    myTextViewAdditional.setText(myTextView.getText());
 
-                String myTemporaryString = "";
-                myTextView.setText(myTextView.getText()+"=");
-                myTextViewAdditional.setText(myTextView.getText());
-
-                for (int i=0; i < myTextView.length();i++) {
-                   // Log.d("MYLOG", "ITERATION NUMBER " + i);
-                    if (myTextView.getText().toString().charAt(i) == '+' |
-                            myTextView.getText().toString().charAt(i) == '-' |
-                            myTextView.getText().toString().charAt(i) == 'x' |
-                            myTextView.getText().toString().charAt(i) == '÷' ){
+                    for (int i = 1; i < myTextView.length(); i++) {
+                        // Log.d("MYLOG", "ITERATION NUMBER " + i);
+                        if (myTextView.getText().toString().charAt(i) == '+' |
+                                myTextView.getText().toString().charAt(i) == '-' |
+                                myTextView.getText().toString().charAt(i) == 'x' |
+                                myTextView.getText().toString().charAt(i) == '÷') {
 
                             ii++;
 
+                        }
+
                     }
 
-                }
 
+                    //Log.d("MYLOG", "ii NUMBER " + ii);
 
-                //Log.d("MYLOG", "ii NUMBER " + ii);
+                    Double[] myNumbers = new Double[ii + 1];
+                    char[] mySigns = new char[ii + 1];
 
-                Double[] myNumbers = new Double[ii+1];
-                char[] mySigns = new char[ii+1];
+                    if (myTextView.getText().toString().charAt(0) == '-') {
 
-                if (myTextView.getText().toString().charAt(0) == '-'){
-
-                    mySigns[0]='-';
-                }else {
-
-                    mySigns[0]='+';
-                }
-
-                Log.d("MYLOG", " NUMBER ONE   " + ii);
-
-                int iii=0;
-                for (int i=0; i < myTextView.length();i++) {
-                    if ((myTextView.getText().charAt(i) >= '0' &
-                            myTextView.getText().charAt(i) <= '9') |
-                            myTextView.getText().charAt(i) == '.' ) {
-
-                        myTemporaryString = myTemporaryString + myTextView.getText().charAt(i);
-                        //Log.d("MYLOG","NUMBER iii = " + iii+ " |   myTemporaryString  " + myTemporaryString);
+                        mySigns[0] = '-';
                     } else {
-                        myNumbers[iii] = Double.valueOf(myTemporaryString);
-                        //Log.d("MYLOG", "iii DOUBLE NUMBER " + String.valueOf(myNumbers[iii]));
-                        iii++;
 
-                       // Log.d("MYLOG", iii + "   SIGN is   " + myTextView.getText().charAt(i));
+                        mySigns[0] = '+';
+                    }
 
-                        if(myTextView.getText().charAt(i) == '+' |
-                                myTextView.getText().charAt(i) == '-' |
-                                myTextView.getText().charAt(i) == 'x' |
-                                myTextView.getText().charAt(i) == '÷'){
+                    // Log.d("MYLOG", " NUMBER ONE   " + ii);
 
-                            mySigns[iii]=myTextView.getText().charAt(i);
-                            Log.d("MYLOG", iii + "  SIGNS  IS " + mySigns[iii]);
+                    int iii = 0;
+                    for (int i = 0; i < myTextView.length(); i++) {
+
+                        if ((myTextView.getText().charAt(i) >= '0' &
+                                myTextView.getText().charAt(i) <= '9') |
+                                myTextView.getText().charAt(i) == '.') {
+
+                            myTemporaryString = myTemporaryString + myTextView.getText().charAt(i);
+                            //Log.d("MYLOG","NUMBER iii = " + iii+ " |   myTemporaryString  " + myTemporaryString);
+                        } else if (i != 0) {
+                            myNumbers[iii] = Double.valueOf(myTemporaryString);
+                            //Log.d("MYLOG", "iii DOUBLE NUMBER " + String.valueOf(myNumbers[iii]));
+                            iii++;
+
+                            // Log.d("MYLOG", iii + "   SIGN is   " + myTextView.getText().charAt(i));
+
+                            if (myTextView.getText().charAt(i) == '+' |
+                                    myTextView.getText().charAt(i) == '-' |
+                                    myTextView.getText().charAt(i) == 'x' |
+                                    myTextView.getText().charAt(i) == '÷') {
+
+                                mySigns[iii] = myTextView.getText().charAt(i);
+                                Log.d("MYLOG", iii + "  SIGNS  IS " + mySigns[iii]);
+                            }
+
+
+                            myTemporaryString = "";
+
+                        }
+                    }
+
+                    Double myTemporaryNumber = 0.0;
+                    Double myConstantNumber = 0.0;
+                    for (int i = 1; i < mySigns.length; i++) {
+                        boolean flag1 = false;
+                        Log.d("MYLOG", "  NUMBER i  = " + i);
+
+                        if (mySigns[i] == 'x' & mySigns[i - 1] == '+') {
+                            Log.d("MYLOG", i + "  myNumbers + *  = " + myNumbers[i - 1] + "   " + myNumbers[i]);
+                            myTemporaryNumber = myNumbers[i - 1] * myNumbers[i];
+                            flag1 = true;
+                            Log.d("MYLOG", i + "  myTemporaryNumber + *  = " + myTemporaryNumber);
+
+                        } else if (mySigns[i] == 'x' & mySigns[i - 1] == '-') {
+                            Log.d("MYLOG", i + "  myNumbers - *  = " + myNumbers[i - 1] + "   " + myNumbers[i]);
+                            myTemporaryNumber = -myNumbers[i - 1] * myNumbers[i];
+                            flag1 = true;
+                            Log.d("MYLOG", i + "  myTemporaryNumber - *  = " + myTemporaryNumber);
+
+                        } else if (mySigns[i] == '÷' & mySigns[i - 1] == '+') {
+                            Log.d("MYLOG", i + "  myNumbers  + /  = " + myNumbers[i - 1] + "   " + myNumbers[i]);
+                            myTemporaryNumber = myNumbers[i - 1] / myNumbers[i];
+                            flag1 = true;
+                            Log.d("MYLOG", i + "  myTemporaryNumber + /  = " + myTemporaryNumber);
+
+                        } else if (mySigns[i] == '÷' & mySigns[i - 1] == '-') {
+                            Log.d("MYLOG", i + "  myNumbers - /  = " + myNumbers[i - 1] + "   " + myNumbers[i]);
+                            myTemporaryNumber = -myNumbers[i - 1] / myNumbers[i];
+                            flag1 = true;
+                            Log.d("MYLOG", i + "  myTemporaryNumber - /  = " + myTemporaryNumber);
+                        }
+
+                        // if (flag1 == true) {
+                        int j = i;
+                        //while (j < mySigns.length-2) {
+                        while (flag1 == true) {
+                            if (j <= mySigns.length - 2) {
+                                Log.d("MYLOG", "WHILE FOR  NUMBER J  = " + j);
+                                if (mySigns[j + 1] == 'x') {
+                                    // Log.d("MYLOG", j + "  NUMBER J *  = " + myTemporaryNumber +"   "+myNumbers[j + 1]);
+                                    myTemporaryNumber = myTemporaryNumber * myNumbers[j + 1];
+                                    // Log.d("MYLOG", j + "  NUMBER J  = " + myTemporaryNumber );
+                                    j++;
+
+                                } else if (mySigns[j + 1] == '÷') {
+                                    // Log.d("MYLOG", j + "  NUMBER J /  = " + myTemporaryNumber +"   "+myNumbers[j + 1]);
+                                    myTemporaryNumber = myTemporaryNumber / myNumbers[j + 1];
+                                    // Log.d("MYLOG", j + "  NUMBER J  = " + myTemporaryNumber );
+                                    j++;
+
+
+                                } else if (mySigns[j + 1] == '+' | mySigns[j + 1] == '-') {
+                                    flag1 = false;
+                                    i = j;
+                                    Log.d("MYLOG", "  myTemporaryNumber  IS " + myTemporaryNumber);
+                                    myConstantNumber = myConstantNumber + myTemporaryNumber;
+                                    myTemporaryNumber = 0.0;
+                                    Log.d("MYLOG", "  myConstantNumber  IS " + myConstantNumber);
+                                }
+
+                            } else {
+                                Log.d("MYLOG", "  NUMBER J >= mySigns.length-2  = " + j);
+                                break;
+
+                            }
+
+
                         }
 
 
-                        myTemporaryString = "";
-
                     }
+                    Log.d("MYLOG", "  myTemporaryNumber  IS " + myTemporaryNumber);
+                    myConstantNumber = myConstantNumber + myTemporaryNumber;
+                    Log.d("MYLOG", "  myConstantNumber  IS " + myConstantNumber);
+
+
+                    for (int i = 0; i < mySigns.length; i++) {
+                        Log.d("MYLOG", " mySigns  IS " + mySigns[i]);
+                        Log.d("MYLOG", " MY I NUMBER =  " + i + "| MY ARRAY LENGTH =  " + mySigns.length);
+                        if ((mySigns[i] == 'x' | mySigns[i] == '÷')) {
+                           // break;
+                        } else if ((mySigns[i] == '+' | mySigns[i] == '-') & (mySigns.length == i + 1)) {
+                            Log.d("MYLOG", " YOU ARE HERE");
+                            if (mySigns[i] == '+') {
+                                Log.d("MYLOG", "  my myNumbers for +    " + myNumbers[i]);
+                                myConstantNumber = myConstantNumber + myNumbers[i];
+                            } else if (mySigns[i] == '-') {
+                                Log.d("MYLOG", "  my myNumbers for -    " + myNumbers[i]);
+                                myConstantNumber = myConstantNumber - myNumbers[i];
+                            }
+
+
+                        } else if ((mySigns[i] == '+' | mySigns[i] == '-') & (mySigns[i + 1] == '+' | mySigns[i + 1] == '-')) {
+                            if (mySigns[i] == '+') {
+                                Log.d("MYLOG", "  my myNumbers for +    " + myNumbers[i]);
+                                myConstantNumber = myConstantNumber + myNumbers[i];
+                            } else if (mySigns[i] == '-') {
+                                Log.d("MYLOG", "  my myNumbers for -    " + myNumbers[i]);
+                                myConstantNumber = myConstantNumber - myNumbers[i];
+
+                            }
+
+                        }
+                    }
+
+
+                    Log.d("MYLOG", "  myConstantNumber  AFTER All IS " + myConstantNumber);
+                    if (myConstantNumber % 1.0 == 0) {
+                        myTextView.setText(Integer.toString(Integer.valueOf(myConstantNumber.intValue())));
+                    } else {
+                        myTextView.setText(Double.toString(myConstantNumber));
+                    }
+
+
                 }
-
-                Double myTemporaryNumber = 0.0;
-                for (int i=0; i<mySigns.length;i++){
-                    if (mySigns[i]=='x') {
-                        myTemporaryNumber = myNumbers[i-1]*myNumbers[i];
-                        if (mySigns[i-1]=='-'){
-                            myTemporaryNumber = -myTemporaryNumber;
-
-
-
-                    }
-                    }
-
-
-
-                }
-
-
-
-
-
-
                 break;
 
             case R.id.btnDot:
@@ -367,6 +477,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             myTextView.setText(myTemporaryText);
 
            // Log.d("MYLOG", "CHECKING RIGHT " );
+        }else if(myTextLength == 0)  {
 
         }else if (
                 myTextView.getText().charAt(myTextView.length()-1)=='.' |
