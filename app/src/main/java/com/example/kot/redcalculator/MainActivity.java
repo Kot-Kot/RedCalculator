@@ -4,6 +4,7 @@ import android.content.Intent;
 //import android.inputmethodservice.Keyboard;
 //import android.nfc.Tag;
 import android.content.res.Configuration;
+import android.inputmethodservice.Keyboard;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,15 +23,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String KEY_MY_TEXT_VIEW_MAIN = "DATA_MAIN";
     private static final String KEY_MY_TEXT_VIEW_ADD = "DATA_ADD";
+    private static final String KEY_MY_DOT_FLAG_MAIN = "MY_DOT_FLAG_MAIN";
+    private static final String KEY_MY_DOT_FLAG_ADD = "MY_DOT_FLAG_ADD";
 
     String myTemporaryText="";
     TextView myTextView;
     TextView myTextViewAdditional;
+
     public String myTextViewString;
     public  String myTextViewStringAdd;
 
     public boolean myDotFlag = false;
     public boolean myDotFlagAdd = false;
+
     private int lineCount;
     private int relativeLayoutDirection;
 
@@ -79,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             myTextView.setText(savedInstanceState.getString(KEY_MY_TEXT_VIEW_MAIN));
             myTextViewAdditional.setText(savedInstanceState.getString(KEY_MY_TEXT_VIEW_ADD));
+            myDotFlag = savedInstanceState.getBoolean(KEY_MY_DOT_FLAG_MAIN);
+            myDotFlagAdd = savedInstanceState.getBoolean(KEY_MY_DOT_FLAG_ADD);
 
             Log.d("MYLOG","onCreate   myTextViewString  "+ myTextViewString);
             Log.d("MYLOG","onCreate   myTextViewStringAdd   "+myTextViewStringAdd);
@@ -156,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         outState.putString(KEY_MY_TEXT_VIEW_MAIN, myTextViewString);
         outState.putString(KEY_MY_TEXT_VIEW_ADD, myTextViewStringAdd);
+        outState.putBoolean(KEY_MY_DOT_FLAG_MAIN, myDotFlag);
+        outState.putBoolean(KEY_MY_DOT_FLAG_ADD, myDotFlagAdd);
     }
 
     @Override
@@ -432,14 +441,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
                             myTextViewAdditional.setTextSize(15);
                         }else{
-                            myTextViewAdditional.setTextSize(13);
+                            myTextViewAdditional.setTextSize(12);
                         }
 
-                   }else{
+                   }else if ((lineCount==1)){
                         if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
                             myTextViewAdditional.setTextSize(30);
                         }else{
-                            myTextViewAdditional.setTextSize(26);
+                            myTextViewAdditional.setTextSize(24);
                         }
                    }
 
@@ -610,7 +619,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
                 myTextView.setText(myTemporaryText);
                 myDotFlagAdd=true;
+                myDotFlag=false;
+                Log.d("MYLOG", "|| myDotFlag +-*/ " + myDotFlag);
                 Log.d("MYLOG", "|| myDotFlagAdd +-*/ " + myDotFlagAdd);
+
 
             }else if(Sign!='.' & myDotFlag==false){
                 myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
