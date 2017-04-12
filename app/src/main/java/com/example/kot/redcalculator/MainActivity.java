@@ -1,11 +1,13 @@
 package com.example.kot.redcalculator;
 
 import android.content.Intent;
-import android.inputmethodservice.Keyboard;
-import android.nfc.Tag;
+//import android.inputmethodservice.Keyboard;
+//import android.nfc.Tag;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -25,7 +28,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     TextView myTextViewAdditional;
     public String myTextViewString;
     public  String myTextViewStringAdd;
-    public boolean myDotFlag =false;
+
+    public boolean myDotFlag = false;
+    public boolean myDotFlagAdd = false;
+    private int lineCount;
+    private int relativeLayoutDirection;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_items, menu);
@@ -64,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
         TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
-
 
 
 
@@ -128,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 TextView myTextView = (TextView) findViewById(R.id.textViewMain);
                 myTextView.setText("");
+                myDotFlag=false;
+                myDotFlagAdd=false;
+
                 return true;
             }
         });
@@ -157,18 +167,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()){
 
             case R.id.btnClear:
-                String myTemporaryString1 = "";
-                for (int i=0;i<myTextView.length()-1;i++){
-                    myTemporaryString1 = myTemporaryString1+myTextView.getText().charAt(i);
+                if(myTextView.getText().length()!=0){
+                    if(myTextView.getText().charAt(myTextView.length()-1)=='.'){
+                        myDotFlag=false;
+                        Log.d("MYLOG", "btnClear + myDotFlag = " +myDotFlag);
+                    }else if(myTextView.getText().charAt(myTextView.getText().length()-1)=='+' ||
+                            myTextView.getText().charAt(myTextView.getText().length()-1)=='-' ||
+                            myTextView.getText().charAt(myTextView.getText().length()-1)=='x' ||
+                            myTextView.getText().charAt(myTextView.getText().length()-1)=='÷'){
+
+                        //if(myDotFlag==true){
+                         //   myDotFlag=false;
+                           // Log.d("MYLOG", "btnClear + myDotFlag = " +myDotFlag);
+                      //  }
+                        if(myDotFlagAdd==true & myDotFlag==false){
+
+                            myDotFlag=true;
+                            myDotFlagAdd=false;
+                            Log.d("MYLOG", "btnClear + myDotFlag = " +myDotFlag);
+                            Log.d("MYLOG", "btnClear + myDotFlagAdd = " +myDotFlagAdd);
+                        }
+                    }
+
+
+
+                    myTextView.setText(myTextView.getText().toString().substring(0,myTextView.length()-1));
                 }
 
-                myTextView.setText(myTemporaryString1);
+
+                //String myTemporaryString1 = "";
+
+               // for (int i=0;i<myTextView.length()-1;i++){
+                   // myTemporaryString1 = myTemporaryString1+myTextView.getText().charAt(i);
+                //}
+
+               // myTextView.setText(myTemporaryString1);
 
                 break;
 
 
 
             case R.id.btnEqual:
+
+
+
+
                 if (myTextView.getText().length()==0 ||
                         myTextView.getText().charAt(myTextView.getText().length()-1)=='+' ||
                         myTextView.getText().charAt(myTextView.getText().length()-1)=='-' ||
@@ -244,6 +287,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                                 mySigns[iii] = myTextView.getText().charAt(i);
                                 Log.d("MYLOG", iii + "  SIGNS  IS " + mySigns[iii]);
+                            }
+                            Log.d("MYLOG", iii-1 + "   myNumbers is   " + myNumbers[iii-1]);
+                            Log.d("MYLOG", iii-1 + "   mySigns is   " + mySigns[iii-1]);
+                            if(myNumbers[iii-1]==0.0 && mySigns[iii-1]=='÷'){
+                                Toast myToast = Toast.makeText(getApplicationContext(),"EGGOR!!!\nMan! Are You stupid?", Toast.LENGTH_LONG);
+
+                                myToast.setGravity(Gravity.TOP,0,150);
+                                myToast.show();
+                                myTextViewAdditional.setText(myTextView.getText());
+                                myTextView.setText("");
+                                myTextViewString = myTextView.getText().toString();
+                                myTextViewStringAdd=myTextViewAdditional.getText().toString();
+                                return;
+
                             }
 
 
@@ -360,11 +417,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Log.d("MYLOG", "  myConstantNumber  AFTER All IS " + myConstantNumber);
                     if (myConstantNumber % 1.0 == 0) {
                         myTextView.setText(Integer.toString(Integer.valueOf(myConstantNumber.intValue())));
+                        myDotFlag=false;
+                        myDotFlagAdd=false;
                     } else {
                         myConstantNumber=Math.rint(1000000.0*myConstantNumber)/1000000.0;
                         myTextView.setText(Double.toString(myConstantNumber));
+                        myDotFlag=true;
+                        myDotFlagAdd=false;
                     }
 
+                    lineCount = myTextViewAdditional.getLineCount();
+
+                    if (lineCount>1){
+                        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+                            myTextViewAdditional.setTextSize(15);
+                        }else{
+                            myTextViewAdditional.setTextSize(13);
+                        }
+
+                   }else{
+                        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+                            myTextViewAdditional.setTextSize(30);
+                        }else{
+                            myTextViewAdditional.setTextSize(26);
+                        }
+                   }
 
                 }
                 break;
@@ -492,24 +569,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 myTextView.getText().charAt(myTextView.length()-1)=='÷'){
            // Log.d("MYLOG", "CHECKING WRONG " );
 
-                 myTemporaryText = myTextView.getText().toString();
-                 myTextView.setText(myTemporaryText.substring(0,myTemporaryText.length()-1)+Character.toString(Sign));
+
+                if(myDotFlagAdd==true & Sign!='.'){
+                    myTemporaryText = myTextView.getText().toString();
+                    myTextView.setText(myTemporaryText.substring(0,myTemporaryText.length()-1)+Character.toString(Sign));
+                    myDotFlag=false;
+                   // myDotFlagAdd=false;
+                    Log.d("MYLOG", "| myDotFlag +-*/ " + myDotFlag);
+                   // Log.d("MYLOG", "| myDotFlagAdd +-*/ " + myDotFlagAdd);
+                }else if (myDotFlagAdd==false & Sign!='.'){
+                     myTemporaryText = myTextView.getText().toString();
+                    myTextView.setText(myTemporaryText.substring(0,myTemporaryText.length()-1)+Character.toString(Sign));
+                    myDotFlag=false;
+                  Log.d("MYLOG", "| myDotFlag +-*/ " + myDotFlag);
+                  //Log.d("MYLOG", "| myDotFlagAdd +-*/ " + myDotFlagAdd);
+               }else if (myDotFlagAdd==false & Sign=='.'){
+                   myTemporaryText = myTextView.getText().toString();
+                  myTextView.setText(myTemporaryText.substring(0,myTemporaryText.length()-1)+Character.toString(Sign));
+                   myDotFlag=true;
+                    //myDotFlagAdd=true;
+                  Log.d("MYLOG", "| myDotFlag . " + myDotFlag);
+                   // Log.d("MYLOG", "| myDotFlagAdd . " + myDotFlagAdd);
+                }else if (myDotFlagAdd==true & Sign=='.'){
+
+                }
+
 
         }else{
             if (Sign=='.' & myDotFlag==false){
                 myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
                 myTextView.setText(myTemporaryText);
                 myDotFlag=true;
-                Log.d("MYLOG", "| myDotFlag . " + myDotFlag);
+                myDotFlagAdd=false;
+                Log.d("MYLOG", "|| myDotFlag . " + myDotFlag);
+                Log.d("MYLOG", "|| myDotFlagAdd . " + myDotFlagAdd);
             }else if(Sign=='.' & myDotFlag==true){
                 myDotFlag=true;
                 Log.d("MYLOG", "|| myDotFlag . " + myDotFlag);
-            }else{
+            }else if(Sign!='.' & myDotFlag==true){
                 myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
                 myTextView.setText(myTemporaryText);
-                myDotFlag=false;
-                Log.d("MYLOG", "||| myDotFlag +-*/ " + myDotFlag);
-            }
+                myDotFlagAdd=true;
+                Log.d("MYLOG", "|| myDotFlagAdd +-*/ " + myDotFlagAdd);
+
+            }else if(Sign!='.' & myDotFlag==false){
+                myTemporaryText = myTextView.getText().toString()+Character.toString(Sign);
+                myTextView.setText(myTemporaryText);
+               // myDotFlag=true;
+                Log.d("MYLOG", "|| myDotFlag +-*/ " + myDotFlag);
+        }
 
 
 

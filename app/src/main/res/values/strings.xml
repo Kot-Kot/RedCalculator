@@ -2,4 +2,6 @@
     <string name="app_name">RedCalculator</string>
     <string name="menu_name1">About</string>
     <string name="menu_name2">Exit</string>
+
+
 </resources>
