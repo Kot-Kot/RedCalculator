@@ -18,9 +18,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity">
+        <activity
+            android:name=".AboutActivity">
 
         </activity>
+
+        <activity
+            android:name=".MyPreferenceActivity"
+            android:label="@string/settings_title"
+            android:theme="@style/AppTheme">
+
+
+        </activity>
+
     </application>
 
 </manifest>

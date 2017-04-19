@@ -1,10 +1,13 @@
 package com.example.kot.redcalculator;
 
+import android.content.Context;
 import android.content.Intent;
 //import android.inputmethodservice.Keyboard;
 //import android.nfc.Tag;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.inputmethodservice.Keyboard;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,7 +22,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_MY_TEXT_VIEW_MAIN = "mytext";
+    public static final String APP_PREFERENCES_MY_TEXT_VIEW_ADD = "myaddtext";
+    public static final String APP_PREFERENCES_MY_DOT_FLAG_MAIN = "mydotflag";
+    public static final String APP_PREFERENCES_MY_DOT_FLAG_ADD = "mydotflagadd";
+
+    private SharedPreferences mySettings;
 
     private static final String KEY_MY_TEXT_VIEW_MAIN = "DATA_MAIN";
     private static final String KEY_MY_TEXT_VIEW_ADD = "DATA_ADD";
@@ -36,6 +47,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean myDotFlag = false;
     public boolean myDotFlagAdd = false;
 
+    Button myButton0;
+    Button myButton1;
+    Button myButton2;
+    Button myButton3;
+    Button myButton4;
+    Button myButton5;
+    Button myButton6;
+    Button myButton7;
+    Button myButton8;
+    Button myButton9;
+    Button myButtonDot;
+
+    Button myButtonDivision;
+    Button myButtonPlus;
+    Button myButtonMinus;
+    Button myButtonMultiply;
+    Button myButtonEqual;
+    Button myButtonClear;
+
+
+
+
+
+
+
+
     private int lineCount;
     private int relativeLayoutDirection;
 
@@ -47,10 +84,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent myIntent = new Intent();
 
         switch (item.getItemId()){
+            case R.id.settings:
+                myIntent = new Intent(this, MyPreferenceActivity.class);
+                startActivity(myIntent);
+
+                return true;
+
             case R.id.about:
-                Intent myIntent = new Intent(this, AboutActivity.class);
+                myIntent = new Intent(this, AboutActivity.class);
                 startActivity(myIntent);
 
                 return true;
@@ -66,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +120,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
+
+
+
+        mySettings = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
 
         TextView myTextView = (TextView) findViewById(R.id.textViewMain);
         TextView myTextViewAdditional = (TextView) findViewById(R.id.textViewAdditional);
@@ -89,30 +139,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             //Log.d("MYLOG","onCreate   myTextViewString  "+ myTextViewString);
             //Log.d("MYLOG","onCreate   myTextViewStringAdd   "+myTextViewStringAdd);
+        }else{
+            if (mySettings.contains(APP_PREFERENCES_MY_TEXT_VIEW_MAIN)){
+                myTextView.setText(mySettings.getString(APP_PREFERENCES_MY_TEXT_VIEW_MAIN, ""));
+            }
+            if (mySettings.contains(APP_PREFERENCES_MY_TEXT_VIEW_ADD)){
+                myTextViewAdditional.setText(mySettings.getString(APP_PREFERENCES_MY_TEXT_VIEW_ADD, ""));
+            }
+            if(mySettings.contains(APP_PREFERENCES_MY_DOT_FLAG_MAIN)){
+                myDotFlag = Boolean.parseBoolean(mySettings.getString(APP_PREFERENCES_MY_DOT_FLAG_MAIN, "false"));
+                Log.d("MYLOG","APP_PREFERENCES_MY_DOT_FLAG =  "+ myDotFlag);
+            }
+
+            if(mySettings.contains(APP_PREFERENCES_MY_DOT_FLAG_ADD)){
+                myDotFlagAdd = Boolean.parseBoolean(mySettings.getString(APP_PREFERENCES_MY_DOT_FLAG_ADD, "false"));
+                Log.d("MYLOG","APP_PREFERENCES_MY_DOT_FLAG_ADD =  "+ myDotFlagAdd);
+            }
+
+
         }
 
 
+        myButton0 = (Button) findViewById(R.id.btn0);
+        myButton1 = (Button) findViewById(R.id.btn1);
+        myButton2 = (Button) findViewById(R.id.btn2);
+        myButton3 = (Button) findViewById(R.id.btn3);
+        myButton4 = (Button) findViewById(R.id.btn4);
+        myButton5 = (Button) findViewById(R.id.btn5);
+        myButton6 = (Button) findViewById(R.id.btn6);
+        myButton7 = (Button) findViewById(R.id.btn7);
+        myButton8 = (Button) findViewById(R.id.btn8);
+        myButton9 = (Button) findViewById(R.id.btn9);
+        myButtonDot = (Button) findViewById(R.id.btnDot);
 
-        Button myButton1 = (Button) findViewById(R.id.btn1);
-        Button myButton0 = (Button) findViewById(R.id.btn0);
-        Button myButton2 = (Button) findViewById(R.id.btn2);
-        Button myButton3 = (Button) findViewById(R.id.btn3);
-        Button myButton4 = (Button) findViewById(R.id.btn4);
-        Button myButton5 = (Button) findViewById(R.id.btn5);
-        Button myButton6 = (Button) findViewById(R.id.btn6);
-        Button myButton7 = (Button) findViewById(R.id.btn7);
-        Button myButton8 = (Button) findViewById(R.id.btn8);
-        Button myButton9 = (Button) findViewById(R.id.btn9);
-        Button myButtonDot = (Button) findViewById(R.id.btnDot);
+        myButtonDivision = (Button) findViewById(R.id.btnDivision);
+        myButtonPlus = (Button) findViewById(R.id.btnPlus);
+        myButtonMinus = (Button) findViewById(R.id.btnMinus);
+        myButtonMultiply = (Button) findViewById(R.id.btnMultiply);
 
-        Button myButtonDivision = (Button) findViewById(R.id.btnDivision);
-        Button myButtonPlus = (Button) findViewById(R.id.btnPlus);
-        Button myButtonMinus = (Button) findViewById(R.id.btnMinus);
-        Button myButtonMultiply = (Button) findViewById(R.id.btnMultiply);
+        myButtonEqual = (Button) findViewById(R.id.btnEqual);
 
-        Button myButtonEqual = (Button) findViewById(R.id.btnEqual);
-
-        Button myButtonClear = (Button) findViewById(R.id.btnClear);
+        myButtonClear = (Button) findViewById(R.id.btnClear);
 
         myButton0.setWidth(myButton1.getWidth());
         myButtonClear.setWidth(myButtonPlus.getWidth());
@@ -151,6 +218,63 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+
+        Context myContext = getApplicationContext();
+        SharedPreferences mySP = PreferenceManager.getDefaultSharedPreferences(myContext);
+        mySP.registerOnSharedPreferenceChangeListener(this);
+
+        float myTextSize =Float.parseFloat(mySP.getString(getString(R.string.text_sizes), "30"));
+        //Toast myToast = Toast.makeText(getApplicationContext(), String.valueOf(myTextSize), Toast.LENGTH_LONG);
+        //  myToast.show();
+
+
+        myButton0.setTextSize(myTextSize);
+        myButton1.setTextSize(myTextSize);
+        myButton2.setTextSize(myTextSize);
+        myButton3.setTextSize(myTextSize);
+        myButton4.setTextSize(myTextSize);
+        myButton5.setTextSize(myTextSize);
+        myButton6.setTextSize(myTextSize);
+        myButton7.setTextSize(myTextSize);
+        myButton8.setTextSize(myTextSize);
+        myButton9.setTextSize(myTextSize);
+        myButtonDot.setTextSize(myTextSize);
+
+        myButtonDivision.setTextSize(myTextSize);
+        myButtonMinus.setTextSize(myTextSize);
+        myButtonMultiply.setTextSize(myTextSize*2/3);
+        myButtonPlus.setTextSize(myTextSize);
+        myButtonClear.setTextSize(myTextSize);
+        myButtonEqual.setTextSize(myTextSize);
+
+
+    }
+
+
+
+    @Override
+    protected void onStop() {
+
+
+        super.onStop();
+
+        // Save values if activity will be closed
+        myTextView = (TextView)  findViewById(R.id.textViewMain);
+        myTextViewAdditional = (TextView)  findViewById(R.id.textViewAdditional);
+
+        SharedPreferences.Editor myEditor = mySettings.edit();
+        myEditor.putString(APP_PREFERENCES_MY_TEXT_VIEW_MAIN, myTextView.getText().toString());
+        myEditor.putString(APP_PREFERENCES_MY_TEXT_VIEW_ADD, myTextViewAdditional.getText().toString());
+        myEditor.putString(APP_PREFERENCES_MY_DOT_FLAG_MAIN, Boolean.toString(myDotFlag));
+        myEditor.putString(APP_PREFERENCES_MY_DOT_FLAG_ADD, Boolean.toString(myDotFlagAdd));
+        myEditor.apply();
     }
 
 
@@ -355,7 +479,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                         int j = i;
-                        
+
                         while (flag1 == true) {
                             if (j <= mySigns.length - 2) {
                                 Log.d("MYLOG", "WHILE FOR  NUMBER J  = " + j);
@@ -642,5 +766,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
+    }
 }
