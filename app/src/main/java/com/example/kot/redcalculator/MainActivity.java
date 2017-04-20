@@ -119,7 +119,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
        // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         //this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_main);
+          setContentView(R.layout.activity_main);
+
+
 
 
 
@@ -181,8 +183,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         myButtonClear = (Button) findViewById(R.id.btnClear);
 
-        myButton0.setWidth(myButton1.getWidth());
-        myButtonClear.setWidth(myButtonPlus.getWidth());
+        //myButton0.setWidth(myButton1.getWidth());
+        //myButtonClear.setWidth(myButtonPlus.getWidth());
+
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+           myButtonClear.setWidth(myButtonEqual.getWidth());
+        }
+
+
+
 
         myButton0.setOnClickListener((View.OnClickListener) this);
         myButton1.setOnClickListener((View.OnClickListener) this);
@@ -234,6 +243,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //Toast myToast = Toast.makeText(getApplicationContext(), String.valueOf(myTextSize), Toast.LENGTH_LONG);
         //  myToast.show();
 
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+            myButtonClear.setWidth(myButtonEqual.getWidth());
+            Log.d("MYLOG","protected void onResume()   ORIENTATION_LANDSCAPE");
+            Log.d("MYLOG","myTextSize =   "+ myTextSize);
+        }
 
         myButton0.setTextSize(myTextSize);
         myButton1.setTextSize(myTextSize);
@@ -566,14 +580,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     lineCount = myTextViewAdditional.getLineCount();
 
                     if (lineCount>1){
-                        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+                        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                             myTextViewAdditional.setTextSize(15);
                         }else{
                             myTextViewAdditional.setTextSize(12);
                         }
 
                    }else if ((lineCount==1)){
-                        if(getResources().getConfiguration().orientation== Configuration.ORIENTATION_PORTRAIT){
+                        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
                             myTextViewAdditional.setTextSize(30);
                         }else{
                             myTextViewAdditional.setTextSize(24);

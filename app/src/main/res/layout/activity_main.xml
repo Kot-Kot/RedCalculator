@@ -207,64 +207,63 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/LL3"
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:id="@+id/LL3"
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/LL2"
+
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn7"
+            style="@style/button_style"
+            android:layout_width="wrap_content"
 
             android:layout_height="wrap_content"
-            android:layout_above="@+id/LL2"
-
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:orientation="horizontal"
-            >
+            android:layout_weight="1"
+            android:background="@drawable/buttonstylerounded1"
+            android:onClick="myInput7"
+            android:text="7" />
 
-            <Button
-                android:id="@+id/btn7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/btn8"
+            style="@style/button_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonstylerounded1"
+            android:onClick="myInput8"
+            android:text="8" />
 
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/buttonstylerounded1"
-                android:onClick="myInput7"
-                android:text="7"
-                style="@style/button_style" />
+        <Button
+            android:id="@+id/btn9"
+            style="@style/button_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:background="@drawable/buttonstylerounded1"
+            android:onClick="myInput9"
+            android:text="9" />
 
-            <Button
-                android:id="@+id/btn8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/buttonstylerounded1"
-                android:onClick="myInput8"
-                android:text="8"
-                style="@style/button_style" />
+        <Button
+            android:id="@+id/btnPlus"
+            style="@style/button_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/buttonstylerounded2"
+            android:onClick="myInputPlus"
+            android:text="+" />
 
-            <Button
-                android:id="@+id/btn9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/buttonstylerounded1"
-                android:onClick="myInput9"
-                android:text="9"
-                style="@style/button_style" />
-
-            <Button
-                android:id="@+id/btnPlus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/buttonstylerounded2"
-                android:onClick="myInputPlus"
-                android:text="+"
-                style="@style/button_style" />
-
-        </LinearLayout>
+    </LinearLayout>
 
         <LinearLayout
             android:id="@+id/LL4"
